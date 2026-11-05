@@ -1,11 +1,5 @@
 # mango: Autonomous Multi-Agent Computer Vision Swarm
 
-[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![PyTorch MPS](https://img.shields.io/badge/PyTorch-Apple%20Silicon%20MPS-orange.svg)](https://pytorch.org/)
-[![Ultralytics YOLOv8](https://img.shields.io/badge/Ultralytics-YOLOv8-blueviolet.svg)](https://ultralytics.com)
-[![Google Gemini](https://img.shields.io/badge/Google-Gemini%203.1%20Flash%20Lite-brightgreen.svg)](https://ai.google.dev/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-
 An autonomous multi-agent swarm architecture that combines cloud-based vision planning (Google Gemini 3.1 Flash Lite) with specialized local Ollama agents to collaboratively architect, implement, audit, and compile production-grade, executable Jupyter Notebooks (`cv_pipeline.ipynb`) and architectural logs (`work.md`).
 
 ---
