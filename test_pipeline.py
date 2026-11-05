@@ -16,19 +16,19 @@ import matplotlib.patches as patches
 import torch
 
 print("=" * 60)
-print("🥭 mango CV Pipeline: Quick Smoke Test")
+print("mango CV Pipeline: Smoke Test")
 print("=" * 60)
 
 # 1. Device check
 if torch.backends.mps.is_available():
     device = torch.device("mps")
-    print("✅ Apple Silicon GPU Acceleration (MPS) is ACTIVE")
+    print("[PASS] Apple Silicon GPU Acceleration (MPS) is ACTIVE")
 elif torch.cuda.is_available():
     device = torch.device("cuda")
-    print("✅ NVIDIA CUDA Acceleration is ACTIVE")
+    print("[PASS] NVIDIA CUDA Acceleration is ACTIVE")
 else:
     device = torch.device("cpu")
-    print("ℹ️ Running on CPU")
+    print("[INFO] Running on CPU")
 
 # 2. Synthetic Test Canvas (Simulating camera input)
 canvas = np.ones((640, 640, 3), dtype=np.uint8) * 235
@@ -38,7 +38,7 @@ cv2.rectangle(canvas, (140, 160), (280, 480), (50, 110, 230), -1) # Blue figure
 cv2.circle(canvas, (210, 110), 45, (50, 110, 230), -1)
 cv2.rectangle(canvas, (360, 240), (530, 460), (230, 130, 50), -1) # Orange subject
 cv2.putText(canvas, "mango CV Test Scene", (30, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (40, 40, 40), 2)
-print("✅ Generated synthetic 640x640 RGB image canvas")
+print("[PASS] Generated synthetic 640x640 RGB image canvas")
 
 # 3. Simulate Detection Bounding Boxes
 mock_detections = [
@@ -66,7 +66,7 @@ plt.tight_layout()
 plt.savefig(output_img, bbox_inches="tight")
 plt.close(fig)
 
-print(f"✅ Rendered non-blocking visualization saved to: {output_img}")
+print(f"[PASS] Rendered non-blocking visualization saved to: {output_img}")
 print("=" * 60)
-print("🎉 ALL CHECKS PASSED: Environment and CV rendering pipeline are operational!")
+print("SUCCESS: Environment and CV rendering pipeline are operational.")
 print("=" * 60)

@@ -29,12 +29,12 @@ def call_mango_gemini(prompt: str) -> str:
     current_key = os.environ.get("GEMINI_API_KEY")
     if not current_key:
         print("\n" + "=" * 65)
-        print("❌ [Configuration Error] 'GEMINI_API_KEY' environment variable is not set.")
+        print("[Configuration Error] 'GEMINI_API_KEY' environment variable is not set.")
         print("=" * 65)
-        print("👉 Set your Gemini API key before running:")
-        print("       export GEMINI_API_KEY=\"your-gemini-api-key\"\n")
-        print("   Or create a .env file with:")
-        print("       GEMINI_API_KEY=your-gemini-api-key\n")
+        print("Please configure your Gemini API key before running:")
+        print("    export GEMINI_API_KEY=\"your-gemini-api-key\"\n")
+        print("Or configure a .env file with:")
+        print("    GEMINI_API_KEY=your-gemini-api-key\n")
         print("=" * 65)
         sys.exit(1)
 
@@ -65,13 +65,13 @@ def call_mango_gemini(prompt: str) -> str:
         pass
 
     print("\n" + "=" * 65)
-    print("❌ [Import Error] Missing 'google-genai' package in your environment.")
+    print("[Dependency Error] Missing 'google-genai' package in your environment.")
     print("=" * 65)
-    print("👉 To fix this, run:")
-    print("       pip install google-genai\n")
-    print("   Or activate the existing project virtual environment:")
-    print("       source /Users/srivatsayerrapragada/WorkSpace/AI\\ Photography/.venv/bin/activate")
-    print("       python mango.py start agents\n")
+    print("Install the Google GenAI SDK in your current terminal:")
+    print("    pip install google-genai\n")
+    print("Or activate the virtual environment:")
+    print("    source .venv/bin/activate")
+    print("    python mango.py start agents\n")
     print("=" * 65)
     sys.exit(1)
 
@@ -144,7 +144,7 @@ def log_to_work_md(agent_name: str, role: str, content: str):
     """Appends agent notes to work.md so agents share CV pipeline specs without context window overflow."""
     with open(WORK_FILE, "a", encoding="utf-8") as f:
         f.write(f"\n## [{agent_name} - {role}]\n{content.strip()}\n\n---\n")
-    print(f"📝 [{agent_name}] updated work.md")
+    print(f"[{agent_name}] Updated work.md")
 
 def read_work_md() -> str:
     """Reads shared CV project state from work.md."""
@@ -154,11 +154,11 @@ def read_work_md() -> str:
     return ""
 
 def run_local_cv_agent(agent_key: str, task_instruction: str) -> str:
-    """Loads the local Ollama model, executes its CV specialty, and immediately frees Mac GPU/RAM."""
+    """Loads the local Ollama model, executes its CV specialty, and immediately frees host GPU/RAM."""
     agent = CV_AGENTS[agent_key]
     model_name = agent["model"]
     
-    print(f"\n👁️ [CV Swarm] Loading {agent_key} ({agent['role']}) -> '{model_name}'...")
+    print(f"\n[CV Swarm] Loading {agent_key} ({agent['role']}) -> '{model_name}'...")
     
     shared_memory = read_work_md()
     full_prompt = (
@@ -179,13 +179,13 @@ def run_local_cv_agent(agent_key: str, task_instruction: str) -> str:
         response = requests.post(OLLAMA_GENERATE_URL, json=payload, timeout=30)
         res_json = response.json()
         if "error" in res_json:
-            print(f"⚠️ [Ollama] {res_json['error']}")
+            print(f"[Warning] [Ollama] {res_json['error']}")
             output = f"[{agent_key} Specification]: Pipeline step generated for {task_instruction}."
         else:
             output = res_json.get("response", "")
-            print(f"🧹 [CV Swarm] {agent_key} finished. '{model_name}' flushed from Mac VRAM.")
+            print(f"[CV Swarm] {agent_key} finished. '{model_name}' unloaded from memory.")
     except Exception as e:
-        print(f"⚠️ [Ollama Offline/Unreachable]: {agent_key} dispatched via Mango fallback orchestrator.")
+        print(f"[Notice] [Ollama Offline]: {agent_key} dispatched via Mango fallback orchestrator.")
         output = f"[{agent_key} - {agent['role']}]: Architecture standard verified for Apple MPS and non-blocking Jupyter visualization."
 
     log_to_work_md(agent_key, agent["role"], output)
@@ -193,7 +193,7 @@ def run_local_cv_agent(agent_key: str, task_instruction: str) -> str:
 
 def run_cortex_indexer():
     """Uses Nomic Embed (Cortex) to vector-index the CV pipeline log and immediately free memory."""
-    print(f"\n🧠 [CV Swarm] Waking up Cortex (nomic-embed-text:latest) to index CV specs in work.md...")
+    print(f"\n[CV Swarm] Invoking Cortex (nomic-embed-text:latest) to index CV specs in work.md...")
     content = read_work_md()
     try:
         requests.post(OLLAMA_EMBED_URL, json={
@@ -201,13 +201,13 @@ def run_cortex_indexer():
             "prompt": content[:4000],
             "keep_alive": 0
         }, timeout=15)
-        print("🧹 [CV Swarm] Cortex indexed CV memory and unloaded from Mac VRAM.")
+        print("[CV Swarm] Cortex indexed CV memory and unloaded from memory.")
     except Exception as e:
-        print(f"ℹ️ Cortex indexing skipped (Ollama offline). Proceeding to notebook compilation.")
+        print("[Notice] Cortex indexing skipped (Ollama offline). Proceeding to notebook compilation.")
 
 def build_jupyter_notebook(user_goal: str):
     """Uses Mango (Gemini) to compile the entire work.md log into an executable .ipynb file."""
-    print(f"\n📓 [Mango] Compiling executable Jupyter Notebook '{NOTEBOOK_FILE}' from work.md...")
+    print(f"\n[Mango] Compiling executable Jupyter Notebook '{NOTEBOOK_FILE}' from work.md...")
     shared_memory = read_work_md()
     
     notebook_prompt = (
@@ -288,16 +288,16 @@ def build_jupyter_notebook(user_goal: str):
     with open(NOTEBOOK_FILE, "w", encoding="utf-8") as f:
         json.dump(notebook_json, f, indent=2)
     
-    print(f"✅ [Mango] Saved executable Jupyter Notebook to: {os.path.abspath(NOTEBOOK_FILE)}")
+    print(f"[Mango] Saved executable Jupyter Notebook to: {os.path.abspath(NOTEBOOK_FILE)}")
 
 def start_agents(target_dir: str = None):
     print("=" * 65)
-    print("🥭 MANGO & 8-AGENT LOCAL COMPUTER VISION SWARM INITIALIZED")
+    print("MANGO: MULTI-AGENT COMPUTER VISION SWARM INITIALIZED")
     print("=" * 65)
-    user_goal = input("👉 Assign the Computer Vision task/project: ").strip()
+    user_goal = input("Assign the Computer Vision task/project: ").strip()
     
     if not user_goal:
-        print("❌ Task description cannot be empty.")
+        print("[Error] Task description cannot be empty.")
         return
 
     # Automatically create dated folder with heading if target_dir not provided
@@ -307,14 +307,14 @@ def start_agents(target_dir: str = None):
         target_dir = os.path.join(BASE_DIR, f"{today_str}_{clean_heading}")
     
     set_output_dir(target_dir)
-    print(f"📁 Destination Folder: {OUTPUT_DIR}\n")
+    print(f"Destination Folder: {OUTPUT_DIR}\n")
 
     # Initialize fresh work.md for the Computer Vision project in destination folder
     with open(WORK_FILE, "w", encoding="utf-8") as f:
         f.write(f"# Computer Vision Swarm Log\n**Vision Goal:** {user_goal}\n**Created:** {datetime.now().isoformat()}\n---\n")
 
     # STEP 1: Mango (Gemini 3.1 Flash Lite) creates the CV pipeline roadmap
-    print("\n🥭 [Mango - Gemini 3.1 Flash Lite] Designing Computer Vision workflow...")
+    print("\n[Mango - Gemini 3.1 Flash Lite] Designing Computer Vision workflow...")
     mango_prompt = (
         f"You are Mango, the Master Computer Vision Orchestrator. Break this vision task into a concise "
         f"4-point technical plan designed for a Jupyter Notebook (.ipynb) covering: "
@@ -360,11 +360,11 @@ def start_agents(target_dir: str = None):
     )
 
     print("\n" + "=" * 65)
-    print("🔔 MANGO NOTIFICATION: PIPELINE & JUPYTER NOTEBOOK READY!")
+    print("MANGO NOTIFICATION: PIPELINE & JUPYTER NOTEBOOK READY")
     print("=" * 65)
     print(final_check_text)
-    print(f"\n📂 Shared Agent Memory Log : {os.path.abspath(WORK_FILE)}")
-    print(f"📓 Executable Notebook     : {os.path.abspath(NOTEBOOK_FILE)}")
+    print(f"\nShared Agent Memory Log : {os.path.abspath(WORK_FILE)}")
+    print(f"Executable Notebook     : {os.path.abspath(NOTEBOOK_FILE)}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Mango Computer Vision Multi-Agent Swarm CLI")
